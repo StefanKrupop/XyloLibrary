@@ -9,7 +9,7 @@
 const uint8_t XyloShield::radio_config[] = RADIO_CONFIGURATION_DATA_ARRAY;
 
 XyloShield::XyloShield(uint8_t slaveSelectPin, uint8_t interruptPin, uint8_t sdnPin) : 
-	_sSelPin(slaveSelectPin), _intPin(interruptPin), _sdnPin(sdnPin) {
+	_sSelPin(slaveSelectPin), _intPin(interruptPin), _sdnPin(sdnPin), _packetCnt(1) {
 }
 
 bool XyloShield::begin() {
@@ -85,6 +85,52 @@ bool XyloShield::sendRaw(const uint8_t* data, size_t length) {
 	doAPICall(startTx, sizeof(startTx), NULL, 0);
 
 	return true;
+}
+
+bool XyloShield::sendRaw(const uint8_t* data, size_t length, uint8_t repeatCnt) {
+	for (uint16_t i = 0; i < repeatCnt; ++i) {
+		if (i > 0) {
+			delay(PACKET_REPEAT_DELAY);
+		}
+		if (!sendRaw(data, length)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool XyloShield::sendPacket(uint8_t site, uint16_t zones, const uint8_t* data, size_t length) {
+	uint8_t packet[5 + length] = {
+		site,
+		(uint8_t)(zones & 0x3f),
+		(uint8_t)((zones >> 6) & 0x3f),
+		_packetCnt,
+		0xff // unknown
+	};
+	memcpy(&packet[5], data, length);
+	bool ret = sendRaw(packet, 5 + length, PACKET_REPEAT_CNT);
+
+	_packetCnt++;
+	if (_packetCnt == 0) {
+		_packetCnt = 1;
+	}
+	return ret;
+}
+
+bool XyloShield::wake() {
+	uint8_t packet[] = { 0x00, 0xFF, 0xFF, 0x00, 0x81, 0x02 };
+	uint16_t cnt = 10000 / PACKET_REPEAT_DELAY; // 10 seconds
+	return sendRaw(packet, sizeof(packet), cnt);
+}
+
+bool XyloShield::sleep() {
+	uint8_t packet[] = { 0x00, 0xFF, 0xFF, 0x00, 0x82, 0x02 };
+	return sendRaw(packet, sizeof(packet), PACKET_REPEAT_CNT);
+}
+
+bool XyloShield::keepAlive() {
+	uint8_t packet[] = { 0x00, 0xFF, 0xFF, 0x00, 0x81, 0x02 };
+	return sendRaw(packet, sizeof(packet), PACKET_REPEAT_CNT);
 }
 
 void XyloShield::setProperty(uint16_t property, uint8_t value) {

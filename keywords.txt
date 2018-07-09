@@ -13,8 +13,25 @@ XyloShield	KEYWORD1
 #######################################
 
 sendRaw	KEYWORD2
+sendPacket	KEYWORD2
+wake	KEYWORD2
+sleep	KEYWORD2
+keepAlive	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
 
+ZONE_1	LITERAL1
+ZONE_2	LITERAL1
+ZONE_3	LITERAL1
+ZONE_4	LITERAL1
+ZONE_5	LITERAL1
+ZONE_6	LITERAL1
+ZONE_7	LITERAL1
+ZONE_8	LITERAL1
+ZONE_9	LITERAL1
+ZONE_10	LITERAL1
+ZONE_11	LITERAL1
+ZONE_12	LITERAL1
+ZONES_ALL	LITERAL1
