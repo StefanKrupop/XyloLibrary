@@ -1,0 +1,19 @@
+{
+  "name": "XyloLibrary",
+  "keywords": "Xyloband, RFM26W",
+  "description": "Xyloband communication library. Allows sending commands to Xylobands over RF, using an RFM26W radio module on a XyloShield.",
+  "url": "https://github.com/StefanKrupop/XyloLibrary.git",
+  "include": "XyloLibrary",
+  "authors":
+  [
+    {
+      "name": "Stefan Krupop"
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/StefanKrupop/XyloLibrary.git"
+  },
+  "frameworks": "arduino"
+}
