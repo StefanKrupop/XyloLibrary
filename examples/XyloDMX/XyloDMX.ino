@@ -1,9 +1,9 @@
-// Receive 30 DMX channels starting at "startAddress" and use them to send RGB
+// Receive 36 DMX channels starting at "startAddress" and use them to send RGB
 // data to the 12 Xyloband zones
 #include <XyloLibrary.h>
 #include <DMXSerial.h>
 
-#define DMXCHANNELS             30
+#define DMXCHANNELS             36
 #define KEEPALIVE_INTERVAL      2000
 #define FORCED_UPDATE_INTERVAL  500
 
@@ -80,6 +80,12 @@ void loop() {
           break;
         case 27:
           zones = XyloShield::ZONE_10;
+          break;
+        case 30:
+          zones = XyloShield::ZONE_11;
+          break;
+        case 33:
+          zones = XyloShield::ZONE_12;
           break;
       }
       xylo.sendPacket(0, zones, rgb, sizeof(rgb));
